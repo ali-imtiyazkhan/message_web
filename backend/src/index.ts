@@ -1,10 +1,10 @@
 import "dotenv/config";
-import path from "path";
 import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import http from "http";
 import passport from "passport";
+import path from "path";
 import { Env } from "./config/env.config";
 import { asyncHandler } from "./middlewares/asyncHandler.middleware";
 import { HTTPSTATUS } from "./config/http.config";
@@ -12,27 +12,33 @@ import { errorHandler } from "./middlewares/errorHandler.middleware";
 import connectDatabase from "./config/database.config";
 import { initializeSocket } from "./lib/socket";
 import routes from "./routes";
-
 import "./config/passport.config";
 
 const app = express();
 const server = http.createServer(app);
 
-//socket
+// Initialize socket
 initializeSocket(server);
 
+// Middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(
   cors({
-    origin: Env.FRONTEND_ORIGIN,
+    origin: [
+      "http://localhost:5173",
+      "https://message-web-2nnh.vercel.app",
+      "https://message-web-5.onrender.com"
+    ],
     credentials: true,
   })
 );
 
 app.use(passport.initialize());
 
+// Health check
 app.get(
   "/health",
   asyncHandler(async (req: Request, res: Response) => {
@@ -43,22 +49,21 @@ app.get(
   })
 );
 
+// API routes
 app.use("/api", routes);
 
+// ❌ REMOVE frontend serving for backend-only deployment
 if (Env.NODE_ENV === "production") {
-  const clientPath = path.resolve(__dirname, "../../client/dist");
-
-  //Serve static files
-  app.use(express.static(clientPath));
-
-  app.get(/^(?!\/api).*/, (req: Request, res: Response) => {
-    res.sendFile(path.join(clientPath, "index.html"));
+  app.get("/", (req: Request, res: Response) => {
+    res.send("Backend API is running ✅");
   });
 }
 
+// Global error handler
 app.use(errorHandler);
 
+// Start server
 server.listen(Env.PORT, async () => {
   await connectDatabase();
-  console.log(`Server running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
+  console.log(`✅ Server running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
 });

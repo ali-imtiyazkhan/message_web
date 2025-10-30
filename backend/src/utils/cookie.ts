@@ -19,10 +19,15 @@ export const setJwtAuthCookie = ({ res, userId }: Cookie) => {
   return res.cookie("accessToken", token, {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: Env.NODE_ENV === "production" ? true : false,
-    sameSite: Env.NODE_ENV === "production" ? "strict" : "lax",
+    path: "/",
+    secure: Env.NODE_ENV === "production",
+    sameSite: Env.NODE_ENV === "production" ? "none" : "lax",
   });
 };
 
 export const clearJwtAuthCookie = (res: Response) =>
-  res.clearCookie("accessToken", { path: "/" });
+  res.clearCookie("accessToken", {
+    path: "/",
+    secure: Env.NODE_ENV === "production",
+    sameSite: Env.NODE_ENV === "production" ? "none" : "lax",
+  });

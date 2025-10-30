@@ -47,7 +47,7 @@ export const createChatService = async (
     });
   }
 
-  // Implement websocket
+
   const populatedChat = await chat?.populate(
     "participants",
     "name avatar isAI"
