@@ -17,10 +17,8 @@ import "./config/passport.config";
 const app = express();
 const server = http.createServer(app);
 
-// Initialize socket
 initializeSocket(server);
 
-// Middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
