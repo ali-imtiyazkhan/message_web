@@ -4,7 +4,6 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import http from "http";
 import passport from "passport";
-import path from "path";
 import { Env } from "./config/env.config";
 import { asyncHandler } from "./middlewares/asyncHandler.middleware";
 import { HTTPSTATUS } from "./config/http.config";
@@ -25,9 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173"
-    ],
+    origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
@@ -47,16 +44,20 @@ app.get(
 
 app.use("/api", routes);
 
-
 if (Env.NODE_ENV === "production") {
   app.get("/", (req: Request, res: Response) => {
-    res.send("Backend API is running ");
+    res.send("Backend API is running");
   });
 }
 
 app.use(errorHandler);
 
-server.listen(Env.PORT, async () => {
-  await connectDatabase();
-  console.log(`Server running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
-});
+// ✅ Only start server when executed directly
+if (require.main === module) {
+  server.listen(Env.PORT, async () => {
+    await connectDatabase();
+    console.log(`Server running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
+  });
+}
+
+export default app; // export for testing or imports
