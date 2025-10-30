@@ -28,9 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
-      "https://message-web-2nnh.vercel.app",
-      "https://message-web-5.onrender.com"
+      "http://localhost:5173"
     ],
     credentials: true,
   })
@@ -49,21 +47,18 @@ app.get(
   })
 );
 
-// API routes
 app.use("/api", routes);
 
-// ❌ REMOVE frontend serving for backend-only deployment
+
 if (Env.NODE_ENV === "production") {
   app.get("/", (req: Request, res: Response) => {
-    res.send("Backend API is running ✅");
+    res.send("Backend API is running ");
   });
 }
 
-// Global error handler
 app.use(errorHandler);
 
-// Start server
 server.listen(Env.PORT, async () => {
   await connectDatabase();
-  console.log(`✅ Server running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
+  console.log(`Server running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
 });
