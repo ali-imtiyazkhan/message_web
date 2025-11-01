@@ -16,10 +16,10 @@ import "./config/passport.config";
 const app = express();
 const server = http.createServer(app);
 
-// Initialize Socket.IO
+
 initializeSocket(server);
 
-// Middleware
+
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -31,7 +31,7 @@ app.use(
 );
 app.use(passport.initialize());
 
-// Health check
+
 app.get(
   "/health",
   asyncHandler(async (req: Request, res: Response) => {
@@ -42,20 +42,17 @@ app.get(
   })
 );
 
-// API routes
+
 app.use("/api", routes);
 
-// Production root route
 if (Env.NODE_ENV === "production") {
   app.get("/", (req: Request, res: Response) => {
     res.send("Backend API is running");
   });
 }
 
-// Global error handler
 app.use(errorHandler);
 
-// ✅ Only start server if run directly (important for build & serverless)
 if (require.main === module) {
   (async () => {
     try {
@@ -72,4 +69,4 @@ if (require.main === module) {
   })();
 }
 
-export default app; // export for testing or imports
+export default app;
