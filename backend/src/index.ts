@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: [process.env.FRONTEND_ORIGIN || "http://localhost:5173"],
+    origin: [process.env.FRONTEND_ORIGIN || "http://localhost:5173","https://message-web-nt2t.vercel.app"],
     credentials: true,
   })
 );
