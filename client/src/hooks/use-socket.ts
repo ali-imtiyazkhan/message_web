@@ -2,10 +2,8 @@ import { io, Socket } from "socket.io-client";
 import { create } from "zustand";
 
 // Base backend URL depending on environment
-const BASE_URL =
-  import.meta.env.MODE === "development"
-    ? import.meta.env.VITE_API_URL || "http://localhost:8000"
-    : window.location.origin;
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 
 // Define Zustand store state
 interface SocketState {
